@@ -5,6 +5,8 @@
 
 */
 
+// import { saveAs } from 'file-saver';
+
 var takeSnapshotUI = createClickFeedbackUI();
 
 var video;
@@ -166,10 +168,10 @@ function initCameraStream() {
   var constraints = {
     audio: false,
     video: {
-      width: { ideal: size },
-      height: { ideal: size },
-      //width: { min: 1024, ideal: window.innerWidth, max: 1920 },
-      //height: { min: 776, ideal: window.innerHeight, max: 1080 },
+      width: { ideal: 1280 },
+      height: { ideal: 720 },
+      // width: { min: 1024, ideal: window.innerWidth, max: 1920 },
+      // height: { min: 776, ideal: window.innerHeight, max: 1080 },
       facingMode: currentFacingMode,
     },
   };
@@ -231,11 +233,15 @@ function takeSnapshot() {
       canvas.toBlob(function(blob) {
         resolve(blob);
       }, 'image/jpeg');
+
     });
   }
 
   // some API's (like Azure Custom Vision) need a blob with image data
+
   getCanvasBlob(canvas).then(function(blob) {
+    let name = Math.random().toString(36).substring(7);
+    saveAs(blob, name+".jpeg");
     // do something with the image blob
   });
 }
