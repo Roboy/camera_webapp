@@ -81,6 +81,18 @@ document.addEventListener('DOMContentLoaded', function(event) {
       console.log('Connection to websocket server closed.');
     });
 
+    var latest_filename = new ROSLIB.Param({
+        ros : ros,
+        name : '/snapchat/latest_filename'
+    });
+
+    var latest_photo = new ROSLIB.Topic({
+    ros : ros,
+    name : '/latest_photo',
+    messageType : 'std_msgs/String'
+    });
+
+
     var listener = new ROSLIB.Topic({
       ros : ros,
       name : '/take_photo',
@@ -90,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
     listener.subscribe(function(message) {
       console.log('Received message');
           takeSnapshotUI();
-          // takeSnapshot();
+          takeSnapshot();
       // listener.unsubscribe();
     });
     
@@ -275,9 +287,14 @@ function takeSnapshot() {
   getCanvasBlob(canvas).then(function(blob) {
 
 
-    let name = Math.random().toString(36).substring(7);
+  let name = Math.random().toString(36).substring(7)+".jpeg";
+  var msg = new ROSLIB.Message({
+  data: name
+   });
+    // latest_filename.set(name);
     // openWSConnection("ws", "192.168.0.121", "9090", "");
-    saveAs(blob, name+".jpeg");
+  saveAs(blob, name);
+  latest_photo.publish(msg);
     // do something with the image blob
   });
 }
