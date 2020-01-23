@@ -47,33 +47,36 @@ def print_photo(path, printer='Canon_CP910'):
 
 def watermark_with_transparency(cv_image,
                                 logo,
-                                position=(20,575)):
+                                position=(0,0)):
     base_image = Image.fromarray(cv_image)
     watermark = Image.open(logo)
-    watermark = watermark.resize((100, 130))
+    watermark = watermark.resize((1080,720))
     width, height = base_image.size
- 
+
     transparent = Image.new('RGB', (width, height), (0,0,0,0))
     transparent.paste(base_image, (0,0))
     transparent.paste(watermark, position, mask=watermark)
-    return np.asarray(transparent)
+    open_cv_image = np.array(transparent)
+    # Convert RGB to BGR
+    open_cv_image = open_cv_image[:, :, ::-1].copy()
+    return open_cv_image
 
 def cb(msg):
 	filename = msg.data
 	image = cv2.imread(PHONE_PATH+filename)
-	
+
 	if watermark:
-		image = watermark_with_transparency(cv_image=image, logo=PKG_PATH+'/images/white-logo.png')
+		image = watermark_with_transparency(cv_image=image, logo=PKG_PATH+'/img/lower_border_v0.png')
 	
 	cv2.imwrite(PHOTO_PATH+filename, image)
-	rospy.set_param('snapchat/latest_filename', filename)
+	rospy.set_param('snapchat/latest_filename', filename.split('.')[0])
 
 	if do_scp:
-        qr = generate_qr_png(url='https://bot.roboy.org/%s'%filename, name='qr_%s.png'%filename.split('.')[0], logo=path+'/images/logo.png')
+        qr = generate_qr_png(url='https://bot.roboy.org/%s'%filename, name='qr_%s.png'%filename.split('.')[0], logo=path+'/img/logo.png')
 
         with SCPClient(ssh.get_transport()) as scp:
-            scp.put(filename+'.jpeg', '/var/www/html')
-            scp.put('qr_%s.png'%filename, '/var/www/html')
+            scp.put(filename, '/var/www/html')
+            scp.put('qr_%s.png'%filename.split('.')[0], '/var/www/html')
 
 
 
