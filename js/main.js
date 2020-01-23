@@ -83,14 +83,14 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
     var listener = new ROSLIB.Topic({
       ros : ros,
-      name : '/listener',
-      messageType : 'std_msgs/String'
+      name : '/take_photo',
+      messageType : 'std_msgs/Empty'
     });
 
     listener.subscribe(function(message) {
-      console.log('Received message on ' + listener.name + ': ' + message.data);
+      console.log('Received message');
           takeSnapshotUI();
-          takeSnapshot();
+          // takeSnapshot();
       // listener.unsubscribe();
     });
     
@@ -293,10 +293,10 @@ function createClickFeedbackUI() {
   var overlay = document.getElementById('video_overlay'); //.style.display;
 
   // sound feedback
-  var sndClick = new Howl({ src: ['snd/click.mp3'] });
+  var sndClick = new Howl({ src: ['snd/321.mp3'] });
 
   var overlayVisibility = false;
-  var timeOut = 80;
+  var timeOut = 1500;
 
   function setFalseAgain() {
     overlayVisibility = false;
