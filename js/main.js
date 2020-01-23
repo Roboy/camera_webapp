@@ -61,7 +61,39 @@ document.addEventListener('DOMContentLoaded', function(event) {
         DetectRTC.isMobileDevice,
     );
   });
+
+
 });
+
+ var ros = new ROSLIB.Ros({
+    url : 'wss://192.168.0.121:9090'
+    });
+
+    ros.on('connection', function() {
+      console.log('Connected to websocket server.');
+    });
+
+    ros.on('error', function(error) {
+      console.log('Error connecting to websocket server: ', error);
+    });
+
+    ros.on('close', function() {
+      console.log('Connection to websocket server closed.');
+    });
+
+    var listener = new ROSLIB.Topic({
+      ros : ros,
+      name : '/listener',
+      messageType : 'std_msgs/String'
+    });
+
+    listener.subscribe(function(message) {
+      console.log('Received message on ' + listener.name + ': ' + message.data);
+          takeSnapshotUI();
+          takeSnapshot();
+      // listener.unsubscribe();
+    });
+    
 
 function initCameraUI() {
   video = document.getElementById('video');
@@ -211,6 +243,7 @@ function initCameraStream() {
   }
 }
 
+
 function takeSnapshot() {
   // if you'd like to show the canvas add it to the DOM
   var canvas = document.createElement('canvas');
@@ -240,7 +273,10 @@ function takeSnapshot() {
   // some API's (like Azure Custom Vision) need a blob with image data
 
   getCanvasBlob(canvas).then(function(blob) {
+
+
     let name = Math.random().toString(36).substring(7);
+    // openWSConnection("ws", "192.168.0.121", "9090", "");
     saveAs(blob, name+".jpeg");
     // do something with the image blob
   });
