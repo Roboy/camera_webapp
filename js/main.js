@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
 });
 
  var ros = new ROSLIB.Ros({
-    url : 'wss://192.168.0.121:9090'
+    url : 'wss://192.168.0.105:9090'
     });
 
     ros.on('connection', function() {
@@ -212,7 +212,7 @@ function initCameraStream() {
   var constraints = {
     audio: false,
     video: {
-      width: { ideal: 1280 },
+      width: { ideal: 960 },
       height: { ideal: 720 },
       // width: { min: 1024, ideal: window.innerWidth, max: 1920 },
       // height: { min: 776, ideal: window.innerHeight, max: 1080 },
@@ -310,10 +310,10 @@ function createClickFeedbackUI() {
   var overlay = document.getElementById('video_overlay'); //.style.display;
 
   // sound feedback
-  var sndClick = new Howl({ src: ['snd/321.mp3'] });
+  var sndClick = new Howl({ src: ['snd/click.mp3'] });
 
   var overlayVisibility = false;
-  var timeOut = 1500;
+  var timeOut = 80;
 
   function setFalseAgain() {
     overlayVisibility = false;
