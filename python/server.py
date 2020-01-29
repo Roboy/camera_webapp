@@ -21,7 +21,7 @@ PHONE_PATH='/home/roboy/Pictures/pixel/Download/'
 PKG_PATH=os.path.dirname(os.path.realpath(__file__))+'/../'
 PHOTO_PATH=PKG_PATH+'mwc/'
 
-do_scp = True
+do_scp = False
 generate_qr = True
 watermark = True
 
@@ -52,7 +52,7 @@ def generate_qr_png(url, logo='RoboyLogoCut.png', name='qr.png', destination='')
     im.paste(region,box, mask=region)
     im.save(destination+name, "PNG")
 
-def print_photo(path, printer='Canon_CP910'):
+def print_photo(path, printer='DP-DS620'):
     conn = cups.Connection()
     conn.printFile(printer, path, "", {})
 
@@ -81,7 +81,7 @@ def cb(msg):
     image = cv2.imread(PHONE_PATH+filename)
 
     if watermark:
-        image = watermark_with_transparency(cv_image=image, logo=PKG_PATH+'/img/lower_border_v0.png', position=(0,240))
+        image = watermark_with_transparency(cv_image=image, logo=PKG_PATH+'/img/lower_border_v0.png', position=(0,480))
     
     cv2.imwrite(PHOTO_PATH+filename, image)
     rospy.set_param('snapchat/latest_filename', filename.split('.')[0])
@@ -99,6 +99,7 @@ def print_cb(msg):
     filename = msg.data.strip(' ')
     path = PHOTO_PATH+filename+'.jpeg'
     rospy.loginfo("printing %s"%path)
+    print_photo(path)
 
 def main():
     rospy.init_node("photo_server")

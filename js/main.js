@@ -16,6 +16,9 @@ var switchCameraButton;
 var amountOfCameras = 0;
 var currentFacingMode = 'environment';
 
+let WS_SERVER='192.168.0.105';
+let WS_PORT='9091';
+
 document.addEventListener('DOMContentLoaded', function(event) {
   // do some WebRTC checks before creating the interface
   DetectRTC.load(function() {
@@ -66,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
 });
 
  var ros = new ROSLIB.Ros({
-    url : 'wss://192.168.0.105:9090'
+    url : 'wss://'+WS_SERVER+':'+WS_PORT
     });
 
     ros.on('connection', function() {
@@ -207,13 +210,13 @@ function initCameraStream() {
 
   // we ask for a square resolution, it will cropped on top (landscape)
   // or cropped at the sides (landscape)
-  var size = 1280;
+  var size = 1280; // 960 720
 
   var constraints = {
     audio: false,
     video: {
-      width: { ideal: 960 },
-      height: { ideal: 720 },
+      width: { ideal: 1710 },
+      height: { ideal: 1140 },
       // width: { min: 1024, ideal: window.innerWidth, max: 1920 },
       // height: { min: 776, ideal: window.innerHeight, max: 1080 },
       facingMode: currentFacingMode,
